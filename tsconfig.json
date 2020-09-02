@@ -26,9 +26,12 @@
     "types": [
       "@types/node",
       "@nuxt/types",
+      "@nuxtjs/axios",
       "@types/jquery",
+      "@types/webpack-env",
       "@/types/simplebar",
-      "@types/webpack-env"
+      "@/types/shims-vue",
+      "@/types/vue-events"
     ],
     "suppressImplicitAnyIndexErrors": true,
   },

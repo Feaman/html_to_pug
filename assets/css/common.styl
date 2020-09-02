@@ -48,17 +48,21 @@ html
       text-transform uppercase
       font-size: 18px
       padding 16px
-      transition box-shadow 0.3s, background-color 0.2s
+      transition box-shadow 0.2s, background-color 0.2s
       white-space nowrap
-      color #607D8B
+      color #424242
       user-select none
-      cursor pointer
 
-      &.button--active, &:hover
+      &:not(.button--disabled).button--active, &:not(.button--disabled):hover
+        cursor pointer
         background-color #ff00cc
         font-weight bold
         box-shadow 0 0 5px #000000
         color #000
+
+      &.button--disabled
+        background-color #BDBDBD
+        color #616161
 
     .simplebar-track
         pointer-events all

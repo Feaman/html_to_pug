@@ -15,10 +15,10 @@ export default {
   ** See https://nuxtjs.org/api/configuration-head
   */
   head: {
-    title: process.env.npm_package_name || '',
+    title: 'Html to pug converter',
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      // { name: 'viewport', content: 'width=device-width, initial-scale=0' },
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     link: [
@@ -56,7 +56,15 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/yandex-metrika'
   ],
+  yandexMetrika: {
+    id: '66954790'
+  },
+  axios: {
+    // proxyHeaders: false
+  },
   /*
   ** Build configuration
   ** See https://nuxtjs.org/api/configuration-build/
