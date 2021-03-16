@@ -33,7 +33,7 @@ export default class Converter extends BaseService {
   private parse (elements: Array<ChildNode>, level: number): void {
     elements.forEach(($element: ChildNode, index: number) => {
       if ($element instanceof Element) {
-        this.result += '\n' + this.addSpaces(level) + $element.nodeName.toLowerCase()
+        this.result += `\n${this.addSpaces(level)}${this.getTagName($element)}`
 
         // If attributes
         this.handleAttributes($element, level)
@@ -59,7 +59,7 @@ export default class Converter extends BaseService {
 
   private replaceTags (): void {
     this.tagsToReplace.forEach((tag: string) => {
-      this.string = this.string.replace(new RegExp(`<${tag}>`, 'g'), `<${this.TEMPLATE_TAG_REPLACEMENT}-${tag}>`)
+      this.string = this.string.replace(new RegExp(`<${tag}(.*)>`, 'g'), `<${this.TEMPLATE_TAG_REPLACEMENT}-${tag}$1>`)
       this.string = this.string.replace(new RegExp(`</${tag}>`, 'g'), `</${this.TEMPLATE_TAG_REPLACEMENT}-${tag}>`)
     })
   }
@@ -77,6 +77,21 @@ export default class Converter extends BaseService {
     nodes = nodes.filter(($element: any) => ($element instanceof HTMLElement) || ($element instanceof Text))
 
     return nodes
+  }
+
+  private getTagName ($element: Element): string {
+    let classAttributeValue: string = ''
+    const attributes: Array<Attr> = Array.from($element.attributes)
+
+    const classAttribute: Attr | undefined = attributes.find((attribute: Attr) => attribute.name === 'class')
+    if (classAttribute) {
+      classAttributeValue = '.' + classAttribute.value.replace(/\s/g, '.')
+      $element.removeAttribute('class')
+    }
+
+    const tagName: string = ['div', 'span'].includes($element.localName.toLowerCase()) ? '' : $element.localName
+
+    return `${tagName}${classAttributeValue}`
   }
 
   private handleAttributes ($element: Element, level: number): void {

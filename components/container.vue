@@ -82,25 +82,29 @@ export default class Container extends Vue {
   }
 
   recalculateTextareaHeight ($element: HTMLTextAreaElement): void {
-    $element.style.height = 'auto'
-    $element.style.height = $element.scrollHeight + 'px'
+    if ($element) {
+      $element.style.height = 'auto'
+      $element.style.height = $element.scrollHeight + 'px'
 
-    setTimeout(() => {
-      if ((this.$from instanceof HTMLElement) && $element.scrollHeight < this.$from.offsetHeight) {
-        $element.style.height = this.$from.offsetHeight - 48 + 'px'
-      }
-    }, 300)
+      setTimeout(() => {
+        if ((this.$from instanceof HTMLElement) && $element.scrollHeight < this.$from.offsetHeight) {
+          $element.style.height = this.$from.offsetHeight - 48 + 'px'
+        }
+      }, 300)
+    }
   }
 
   recalculateResultHeight ($element: HTMLTextAreaElement): void {
-    $element.style.height = 'auto'
-    $element.style.height = $element.scrollHeight + 'px'
+    if ($element) {
+      $element.style.height = 'auto'
+      $element.style.height = $element.scrollHeight + 'px'
 
-    setTimeout(() => {
-      if ((this.$from instanceof HTMLElement) && $element.scrollHeight < this.$from.offsetHeight) {
-        $element.style.height = this.$from.offsetHeight - 44 + 'px'
-      }
-    }, 300)
+      setTimeout(() => {
+        if ((this.$from instanceof HTMLElement) && $element.scrollHeight < this.$from.offsetHeight) {
+          $element.style.height = this.$from.offsetHeight - 44 + 'px'
+        }
+      }, 300)
+    }
   }
 }
 </script>
