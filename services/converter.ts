@@ -4,6 +4,7 @@ import { Directions, Sortings } from '~/dictionaries/dictionaries'
 export default class Converter extends BaseService {
   result: string = ''
   private TEMPLATE_TAG_REPLACEMENT = 'elven-tag-replacer'
+  private UPPER_CASE_REPLACE_SYMBOL = 'upper__case__replace__symbol'
   private tagsToReplace = ['template', 'html', 'head', 'body', 'noscript']
 
   constructor (
@@ -18,6 +19,8 @@ export default class Converter extends BaseService {
   convert (): Promise<string> {
     this.result = ''
 
+    this.replaceUpperCaseTagNames()
+
     // Replace dangerous tags
     this.replaceTags()
 
@@ -25,6 +28,8 @@ export default class Converter extends BaseService {
 
     // Replace dangerous tags back
     this.replaceTagsBack()
+
+    this.replaceUpperCaseTagNamesBack()
 
     this.result = this.result.trim() + '\n'
     return Promise.resolve(this.result)
@@ -57,6 +62,18 @@ export default class Converter extends BaseService {
     })
   }
 
+  private replaceUpperCaseTagNames (): void {
+    this.string = this.string.replace(new RegExp('([A-Z])', 'g'), `${this.UPPER_CASE_REPLACE_SYMBOL}$1`)
+  }
+
+  private replaceUpperCaseTagNamesBack (): void {
+    this.result = this.result.trim().replace(new RegExp(`${this.UPPER_CASE_REPLACE_SYMBOL}([a-zA-Z])`, 'g'), this.upperToLowerCaseSymbolReplacer)
+  }
+
+  private upperToLowerCaseSymbolReplacer (text: string) {
+    return text.replace('upper__case__replace__symbol', '').toUpperCase()
+  }
+
   private replaceTags (): void {
     this.tagsToReplace.forEach((tag: string) => {
       this.string = this.string.replace(new RegExp(`<${tag}(.*)>`, 'g'), `<${this.TEMPLATE_TAG_REPLACEMENT}-${tag}$1>`)
@@ -79,6 +96,12 @@ export default class Converter extends BaseService {
     return nodes
   }
 
+  /**
+   * Handles "class" attribute and add it to the tag name
+   *
+   * @param $element Element
+   * @returns string
+   */
   private getTagName ($element: Element): string {
     let classAttributeValue: string = ''
     const attributes: Array<Attr> = Array.from($element.attributes)
@@ -89,7 +112,7 @@ export default class Converter extends BaseService {
       $element.removeAttribute('class')
     }
 
-    const tagName: string = ['div', 'span'].includes($element.localName.toLowerCase()) ? '' : $element.localName
+    const tagName: string = classAttributeValue && ['div', 'span'].includes($element.localName.toLowerCase()) ? '' : $element.localName
 
     return `${tagName}${classAttributeValue}`
   }
