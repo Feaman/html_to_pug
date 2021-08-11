@@ -18,7 +18,7 @@
     @set-to="setTo($event)"
   )
   elven-footer(
-    v-if="to"
+    :show="!!to"
     :from="from"
     :spaces="spaces"
     :attributesDirection="attributesDirection"

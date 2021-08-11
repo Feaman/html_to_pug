@@ -1,19 +1,29 @@
 <template lang="pug" >
 .footer
-  .title COMMENT:
-  textarea(
-    v-model="comment"
-  )
-  .button(
-    @click="send()"
-    :class="{ 'button--disabled': !this.comment }"
-  ) send
-  transition(
-    name="scale-fade"
-  )
-    .notify(
-      v-if="showSent"
-    ) Comment sent
+  template(v-if="show")
+    .title Feedback:
+    textarea(
+      v-model="comment"
+    )
+  .row
+    template(v-if="show")
+      .button(
+        @click="send()"
+        :class="{ 'button--disabled': !this.comment }"
+      ) send
+      transition(
+        name="scale-fade"
+      )
+        .notify(
+          v-if="showSent"
+        ) Feedback sent
+    .spacer
+    a.button.button-github.row.center(
+      href="https://github.com/Feaman/html_to_pug"
+      target="_blank"
+    )
+      div(v-html="$svg.github")
+      .ml-2 Github
 </template>
 
 <script lang="ts" >
@@ -22,6 +32,7 @@ import { Directions, Sortings } from '~/dictionaries/dictionaries'
 
 @Component
 export default class Footer extends Vue {
+  @Prop() show!: Boolean
   @Prop() spaces!: string
   @Prop() attributesDirection!: string
   @Prop() attributesSorting!: string
@@ -73,6 +84,10 @@ export default class Footer extends Vue {
   .button
     width 104px
     margin 24px 0 0 0
+
+  a.button-github
+    min-width 128px
+    text-decoration none
 
   .notify
     position absolute

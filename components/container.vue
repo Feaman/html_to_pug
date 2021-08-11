@@ -176,7 +176,6 @@ border-radius = 24px
   &.accent
     .from, .to
       width fieldWidth
-      height fieldHeight
-      top 'calc(50% - %s)' % (fieldWidth / 2)
+      top 24px
       left 'calc(50% - %s)' % (fieldHeight / 2)
 </style>
