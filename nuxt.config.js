@@ -60,7 +60,7 @@ export default {
     '@nuxtjs/yandex-metrika'
   ],
   yandexMetrika: {
-    id: '66954790'
+    id: '90732521'
   },
   axios: {
     // proxyHeaders: false

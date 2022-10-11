@@ -90,9 +90,8 @@ export default class Header extends Vue {
   }
 
   copy () {
-    this.$emit('copy')
     this.showCopied = true
-    setTimeout(() => this.showCopied = false, 1000)
+    // setTimeout(() => this.showCopied = false, 1000)
   }
 }
 </script>
