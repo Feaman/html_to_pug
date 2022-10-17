@@ -92,6 +92,9 @@ export default class Header extends Vue {
   copy () {
     this.$emit('copy')
     this.showCopied = true
+    setTimeout(() => {
+      this.showCopied = false
+    }, 2000)
   }
 }
 </script>

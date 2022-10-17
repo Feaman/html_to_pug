@@ -47,12 +47,12 @@ export default class Footer extends Vue {
     if (this.comment) {
       this.showSent = true
       setTimeout(() => this.showSent = false, 1000)
-      this.comment = ''
       this.$axios.request({
         method: 'post',
         url: 'https://pavlo.ru/apps/html-to-pug/add-comment',
         data: { from: this.from, comment: this.comment, date: new Date() }
       })
+      this.comment = ''
     }
   }
 }
