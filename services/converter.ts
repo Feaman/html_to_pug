@@ -1,5 +1,5 @@
-import BaseService from './base'
 import { Directions, Sortings } from '~/dictionaries/dictionaries'
+import BaseService from './base'
 
 export default class Converter extends BaseService {
   result: string = ''
@@ -7,7 +7,7 @@ export default class Converter extends BaseService {
   private UPPER_CASE_REPLACE_SYMBOL = 'upper__case__replace__symbol'
   private tagsToReplace = ['template', 'html', 'head', 'body', 'noscript']
 
-  constructor (
+  constructor(
     public string: string,
     public spaces: number,
     public attributesDirection: Directions,
@@ -16,7 +16,7 @@ export default class Converter extends BaseService {
     super()
   }
 
-  convert (): Promise<string> {
+  convert(): Promise<string> {
     this.result = ''
 
     this.replaceUpperCaseTagNames()
@@ -35,7 +35,7 @@ export default class Converter extends BaseService {
     return Promise.resolve(this.result)
   }
 
-  private parse (elements: Array<ChildNode>, level: number): void {
+  private parse(elements: Array<ChildNode>, level: number): void {
     elements.forEach(($element: ChildNode, index: number) => {
       if ($element instanceof Element) {
         this.result += `\n${this.addSpaces(level)}${this.getTagName($element)}`
@@ -62,36 +62,36 @@ export default class Converter extends BaseService {
     })
   }
 
-  private replaceUpperCaseTagNames (): void {
+  private replaceUpperCaseTagNames(): void {
     this.string = this.string.replace(new RegExp('([A-Z])', 'g'), `${this.UPPER_CASE_REPLACE_SYMBOL}$1`)
   }
 
-  private replaceUpperCaseTagNamesBack (): void {
+  private replaceUpperCaseTagNamesBack(): void {
     this.result = this.result.trim().replace(new RegExp(`${this.UPPER_CASE_REPLACE_SYMBOL}([a-zA-Z])`, 'g'), this.upperToLowerCaseSymbolReplacer)
   }
 
-  private upperToLowerCaseSymbolReplacer (text: string) {
+  private upperToLowerCaseSymbolReplacer(text: string) {
     return text.replace('upper__case__replace__symbol', '').toUpperCase()
   }
 
-  private replaceTags (): void {
+  private replaceTags(): void {
     this.tagsToReplace.forEach((tag: string) => {
       this.string = this.string.replace(new RegExp(`<${tag}(.*)>`, 'g'), `<${this.TEMPLATE_TAG_REPLACEMENT}-${tag}$1>`)
       this.string = this.string.replace(new RegExp(`</${tag}>`, 'g'), `</${this.TEMPLATE_TAG_REPLACEMENT}-${tag}>`)
     })
   }
 
-  private replaceTagsBack (): void {
+  private replaceTagsBack(): void {
     this.tagsToReplace.forEach((tag: string) => {
       this.result = this.result.replace(new RegExp(`${this.TEMPLATE_TAG_REPLACEMENT}-${tag}`, 'g'), tag)
     })
   }
 
-  private getInitialNodes (): Array<ChildNode> {
+  private getInitialNodes(): Array<ChildNode> {
     const $element: HTMLDivElement = document.createElement('div')
     $element.innerHTML = this.string
     let nodes: Array<ChildNode> = Array.from($element.childNodes)
-    nodes = nodes.filter(($element: any) => ($element instanceof HTMLElement) || ($element instanceof Text))
+    nodes = nodes.filter(($element: any) => ($element instanceof SVGElement) || ($element instanceof HTMLElement) || ($element instanceof Text))
 
     return nodes
   }
@@ -102,14 +102,14 @@ export default class Converter extends BaseService {
    * @param $element Element
    * @returns string
    */
-  private getTagName ($element: Element): string {
+  private getTagName($element: Element): string {
     let classAttributeValue: string = ''
     const attributes: Array<Attr> = Array.from($element.attributes)
 
     const classAttribute: Attr | undefined = attributes.find((attribute: Attr) => attribute.name === 'class')
     if (classAttribute) {
-      classAttributeValue = '.' + classAttribute.value.replace(/\s/g, '.')
       $element.removeAttribute('class')
+      classAttributeValue = '.' + classAttribute.value.replace(/\s/g, '.')
     }
 
     const tagName: string = classAttributeValue && ['div', 'span'].includes($element.localName.toLowerCase()) ? '' : $element.localName
@@ -117,7 +117,7 @@ export default class Converter extends BaseService {
     return `${tagName}${classAttributeValue}`
   }
 
-  private handleAttributes ($element: Element, level: number): void {
+  private handleAttributes($element: Element, level: number): void {
     if ($element.attributes.length) {
       this.result += '(' + (this.attributesDirection === Directions.COLUMN ? '\n' + this.addSpaces(level, this.spaces) : '')
       const attributes: Array<Attr> = Array.from($element.attributes)
@@ -147,18 +147,18 @@ export default class Converter extends BaseService {
     }
   }
 
-  private handleText ($element: Text, level: number, index: number): void {
+  private handleText($element: Text, level: number, index: number): void {
     const textContent: string = $element.nodeValue ? $element.nodeValue.trim() : ''
     if (textContent) {
       this.result += this.calculateTextPrefix(level, index) + textContent.replace(/\n/g, '')
     }
   }
 
-  private addSpaces (level: number, extraSpaces: number = 0): string {
+  private addSpaces(level: number, extraSpaces: number = 0): string {
     return Array(level * this.spaces + extraSpaces).fill(' ').join('')
   }
 
-  private calculateTextPrefix (level: number, index: number): string {
+  private calculateTextPrefix(level: number, index: number): string {
     if (index === 0) {
       return ' '
     } else {
@@ -166,7 +166,7 @@ export default class Converter extends BaseService {
     }
   }
 
-  private getValueString (value: string): string {
+  private getValueString(value: string): string {
     return value ? '="' + value + '"' : ''
   }
 }
